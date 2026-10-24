@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Fall 26">
+<meta name="apple-mobile-web-app-title" content="Nady Schedule">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@500;600&family=JetBrains+Mono:wght@400;600;700;800&display=swap">
 <style>
@@ -529,9 +529,19 @@ button:active { transform: scale(.97); }
   // PWA
   if ('serviceWorker' in navigator) addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
   var dp, ib = document.getElementById('install');
-  addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); dp = e; ib.style.display = 'inline-block'; });
-  ib.onclick = function () { if (!dp) return; dp.prompt(); dp.userChoice.then(function () { dp = null; ib.style.display = 'none'; }); };
-  addEventListener('appinstalled', function () { ib.style.display = 'none'; });
+  var standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+  var wasInstalled = false; try { wasInstalled = localStorage.getItem('tt-installed2') === '1'; } catch (e) {}
+  if (!standalone && !wasInstalled) {
+    addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); dp = e; ib.style.display = 'inline-block'; });
+  }
+  ib.onclick = function () {
+    if (!dp) { alert('Open the browser menu (⋮) and choose "Install app" or "Add to Home screen".'); return; }
+    try {
+      dp.prompt();
+      dp.userChoice.then(function () { dp = null; ib.style.display = 'none'; });
+    } catch (err) { alert('Open the browser menu (⋮) and choose "Install app" or "Add to Home screen".'); }
+  };
+  addEventListener('appinstalled', function () { ib.style.display = 'none'; try { localStorage.setItem('tt-installed2', '1'); } catch (e) {} });
 })();
 </script>
 </body>

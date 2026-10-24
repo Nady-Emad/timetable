@@ -1,7 +1,7 @@
 {
-  "id": "./",
+  "id": "nady-fall26-schedule",
   "name": "Nady Fall 26 Schedule",
-  "short_name": "Fall 26",
+  "short_name": "Nady Schedule",
   "description": "Weekly schedule with subject, type and group filters",
   "start_url": "./",
   "scope": "./",
