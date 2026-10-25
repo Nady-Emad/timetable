@@ -223,6 +223,8 @@ button:active { transform: scale(.97); }
 .grps .rv{width:100%;text-align:right;font:800 clamp(24px,3.4vw,34px)/1 var(--f-mono);letter-spacing:.03em}
 .wh .b{font-weight:600;font-size:14px}
 @media(max-width:640px){.grps{max-width:150px}.card{grid-template-columns:minmax(0,1fr)}.grps,.grps .k{justify-content:flex-start;text-align:left}}
+.card .instr { color: var(--muted); }
+.wc .w { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>
 </head>
 <body>
@@ -319,8 +321,8 @@ button:active { transform: scale(.97); }
   RAW.forEach(function (co) {
     co[1].forEach(function (r) {
       var key = [co[0], r[1], r[2], r[3], r[4]].join('|');
-      if (r[5] && map[key]) map[key].room = r[5];
-      if (!map[key]) map[key] = { code: COURSES[co[0]].k, course: co[0], sec: r[1], t: typeOf(r[1]), d: DIDX[r[2]], sm: to24(r[3]), em: to24(r[4]), room: r[5] || '', groups: [] };
+      if (r[5] && map[key]) { map[key].room = r[5]; if (r[6]) map[key].instructor = r[6]; }
+      if (!map[key]) map[key] = { code: COURSES[co[0]].k, course: co[0], sec: r[1], t: typeOf(r[1]), d: DIDX[r[2]], sm: to24(r[3]), em: to24(r[4]), room: r[5] || '', instructor: r[6] || '', groups: [] };
       map[key].groups.push(r[0]);
     });
   });
@@ -413,7 +415,7 @@ button:active { transform: scale(.97); }
       h += '<div class="row" data-idx="' + S.indexOf(x) + '" style="--c:' + c.c + ';--i:' + (i++) + '">' +
         '<div class="when">' + timeBlock(x.sm, 'FROM') + timeBlock(x.em, 'TO') + '</div>' +
         '<article class="card"><div><div class="top-l"><span>' + c.k + '</span><span class="g">· ' + esc(x.sec) + '</span><span class="badge ' + x.t + '">' + TYPE[x.t] + '</span><span class="slot-live"></span></div>' +
-        '<h3>' + esc(c.n) + '</h3><div class="who">' + dur(x.em - x.sm) + '</div></div>' +
+        '<h3>' + esc(c.n) + '</h3><div class="who">' + (x.instructor ? '<span class="instr">👤 ' + esc(x.instructor) + '</span> · ' : '') + dur(x.em - x.sm) + '</div></div>' +
         '<div class="grps">' + (x.room ? '<div class="rv">' + esc(x.room) + '</div><div class="k">ROOM</div>' : '') + '<div class="k">GROUPS</div>' + gbs(x) + '</div><div class="prog" hidden><i></i></div></article></div>';
     });
     viewEl.innerHTML = h + '</div>';
@@ -429,6 +431,7 @@ button:active { transform: scale(.97); }
         h += '<div class="wc" data-idx="' + S.indexOf(x) + '" style="--c:' + c.c + ';--i:' + (i++) + '">' +
           '<span class="h"><span>' + c.k + '</span><span class="badge ' + x.t + '">' + TYPE[x.t] + '</span></span>' +
           '<span class="n">' + esc(c.n) + '</span><span class="sc">' + esc(x.sec) + '</span>' +
+          (x.instructor ? '<span class="w">👤 ' + esc(x.instructor) + '</span>' : '') +
           '<span class="gl">' + shownGroups(x).map(function (g) { return '<span>' + esc(g) + '</span>'; }).join('') + '</span>' +
           '<span class="f"><span class="tm">' + t12s(x.sm) + '<span>→ ' + t12s(x.em) + '</span></span>' + (x.room ? '<span class="rm">' + esc(x.room) + '</span>' : '') + '</span></div>';
       });
